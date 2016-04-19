@@ -11,6 +11,31 @@ function noop() {
 }
 
 class Register extends React.Component {
+    constructor(props){
+        super(props)
+    }
+    componentWillReceiveProps(nextProps){
+        //弹出框判断是否注册成功
+       /* const error = nextProps.RegisterErrors;
+        const isRegistering = nextProps.isRegistering;
+
+        if (error != this.props.RegisterErrors && error) {
+            notification.error({
+                message: 'Register Fail',
+                description: error
+            });
+        }
+
+        if (!isRegistering && !error)  {
+            notification.success({
+                message: 'Login Success',
+                description: 'Welcome ' + user
+            });
+            this.context.router.replace('/login');
+        }*/
+
+    }
+
     getValidateStatus(field) {
         const { isFieldValidating, getFieldError, getFieldValue } = this.props.form;
 

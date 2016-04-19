@@ -18,6 +18,8 @@ export default class Header extends Component{
         const {user} = this.props;
         return(
             <div className="ant-layout-header">
+                <div className="logo"></div>
+                <p className="logo_title">云管理商场管理系统</p>
                 <Menu onClick={this.handleClick} mode="horizontal" className="header-menu" >
                     <SubMenu title={<span><Icon type="user"></Icon>{user}</span>}>
                         <Menu.Item key="setting:1">修改密码</Menu.Item>

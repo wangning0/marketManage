@@ -1,7 +1,7 @@
 /**
  * Created by wangning on 16/4/18.
  */
-import { Button, Form, Input,Row,Col } from 'antd';
+import { Button, Form, Input,Row,Col,notification } from 'antd';
 const createForm = Form.create;
 const FormItem = Form.Item;
 import React from 'react';
@@ -12,6 +12,33 @@ function noop() {
 class Login extends React.Component {
     constructor(props){
         super(props)
+    }
+    componentWillReceiveProps(nextProps){
+        //Login成功或者失败
+        /*const error = nextProps.loginErrors;
+        const isLogingIn = nextProps.loginingIn;
+        const user = nextProps.user;
+        const isSuperadmin = nextProps.isSuperadmin;
+
+        if( error!= this.props.loginErrors && error ){
+            notification.error({
+                message:'Login Fail',
+                description:error
+            })
+        }
+
+        if( !isLogingIn && !error && user ){
+            notification.success({
+                message:'Login Success',
+                description:'Welcome' + user
+            })
+        }
+
+        if( isSuperadmin ){
+            this.context.router.replace('/superadmin');
+        } else {
+            this.context.router.replace('/admin');
+        }*/
     }
     getValidateStatus(field) {
         const { isFieldValidating, getFieldError, getFieldValue } = this.props.form;
