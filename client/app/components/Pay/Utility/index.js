@@ -1,18 +1,29 @@
 /**
- * Created by wangning on 16/4/19.
+ * Created by wangning on 16/4/20.
+ * 还缺少通知是缴费成功还是失败
  */
-import React, {Component} from 'react';
-import {Select, Button, Form, Input} from 'antd';
+import React,{Component} from 'react';
+import  {Button,Form,Input,Select,message} from 'antd';
 const createForm = Form.create;
 const FormItem = Form.Item;
-const Option = Select.Option;
 
+function noop(){
+    return false;
+}
 
-class ApplyShop extends Component {
-    handleChange(value){
-        console.log(`selected ${value}`);
+class Utility extends Component{
+    constructor (props){
+        super(props);
     }
+    componentWillReceiveProps(nextProps){
+        //在这里判断是否充值成功
 
+        if (true){
+            message.success('充值成功');
+        } else if(true){
+            message.error('充值失败');
+        }
+    }
     getValidateStatus(field) {
         const { isFieldValidating, getFieldError, getFieldValue } = this.props.form;
 
@@ -30,7 +41,6 @@ class ApplyShop extends Component {
         this.props.form.resetFields();
     }
 
-
     handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFields((errors, values) => {
@@ -43,40 +53,37 @@ class ApplyShop extends Component {
         });
     }
 
+    checkNumber(rule,value,callback) {
+        if(!value){
+            callback()
+        } else if( value && !Number(value) ){
+            callback([new Error('请输入数字')]);
+        } else {
+            callback();
+        }
+
+    }
 
     render() {
         const { getFieldProps, getFieldError, isFieldValidating } = this.props.form;
 
-        const textareaProps = getFieldProps('textarea', {
-            rules: [
-                { required: true, message: '这项是必须要填写的噢~' }
-            ]
-        });
+
         const chooseShopProps = getFieldProps('chooseShop', {
             rules: [
                 { required: true,  message: '必须要选择商铺哦~' }
             ]
         });
 
-        const shopNamesProps = getFieldProps('shopNames',{
-            validate: [{
-                rules: [
-                    { required: true,message:'请输入商铺名称哦~' }
-                ],
-                trigger: 'onBlur'
-            }]
+        const payMoneyProps = getFieldProps('payMoney',{
+            rules:[
+                {required:true,message:'必须填写充值金额~'},
+                {validator:this.checkNumber}
+            ]
         });
-        const applyUserNameProps = getFieldProps('applyUserName',{
-            validate: [{
-                rules: [
-                    { required: true,message:'请输入申请人哦~' }
-                ],
-                trigger: 'onBlur'
-            }]
-        });
+
         const formItemLayout = {
             labelCol: { span: 7 },
-            wrapperCol: { span: 12 }
+            wrapperCol: { span: 4 }
         };
         return (
             <div className="ant-layout-applyShop">
@@ -87,13 +94,13 @@ class ApplyShop extends Component {
                         label="选择商铺"
                     >
                         <Select showSearch
-                                style={{width:200}}
+                                style={{ width: '100%' }}
                                 placeholder="请选择商铺"
                                 optionFilterProp="children"
                                 notFoundContent="无法找到"
                                 searchPlaceholder="输入关键词"
                                 onChange={this.handleChange}
-                                {...chooseShopProps}
+                            {...chooseShopProps}
                         >
                             <Option value="1_1">一楼1铺</Option>
                             <Option value="1_2">一楼2铺</Option>
@@ -110,24 +117,11 @@ class ApplyShop extends Component {
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        label="商铺名称"
+                        label="充值金额"
                         hasFeedback
-                        required>
-                        <Input {...shopNamesProps}  placeholder="请输入申请商铺的名称" id="shopNames" />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="申请人"
-                        hasFeedback
-                        required>
-                        <Input {...applyUserNameProps}   placeholder="请输入申请人的姓名" id="applyUserName" />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="申请理由"
-                        hasFeedback
-                        required>
-                        <Input {...textareaProps} type="textarea"  placeholder="请输入申请理由" id="textarea" />
+                        required
+                        help={isFieldValidating('payMoney') ? ' ' : (getFieldError('payMoney') || []).join(', ')}>
+                        <Input {...payMoneyProps}  placeholder="请输入充值的金额"  />
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 7 }}>
                         <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
@@ -139,6 +133,6 @@ class ApplyShop extends Component {
         )
     }
 }
-ApplyShop = createForm()(ApplyShop);
+Utility = createForm()(Utility);
 
-export default ApplyShop;
+export default Utility;

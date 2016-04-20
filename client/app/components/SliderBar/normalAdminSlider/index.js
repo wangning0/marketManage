@@ -5,9 +5,9 @@
  * Created by wangning on 16/4/18.
  */
 import React,{Component} from 'react';
-import {Menu,Icon} from 'antd';
+import {Menu,Icon,Badge} from 'antd';
 import {Link} from 'react-router';
-
+import '../index.css'
 const SubMenu = Menu.SubMenu;
 
 class SliderBar extends Component{
@@ -19,7 +19,7 @@ class SliderBar extends Component{
                     <Link to="/admin"><Icon type="home"></Icon><span>首页</span></Link>
                 </Menu.Item>
                 <Menu.Item key="notify">
-                    <Link to="/admin/notify"><Icon type="mail"></Icon><span>通知</span></Link>
+                    <Link to="/admin/notify"><Badge count={2}><Icon type="mail"></Icon><span>通知</span></Badge></Link>
                 </Menu.Item>
                 <Menu.Item key="applyShops">
                     <Link to="/admin/applyShops"><Icon type="team"></Icon><span>申请店铺</span></Link>

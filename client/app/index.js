@@ -13,6 +13,10 @@ import Footer from './components/Footer/index';
 import ShowInfos from './components/Home/normalAdmin/index';
 import SuperAdminShowInfos from './components/Home/superAdmin/index';
 import ApplyShop from './components/ApplyShops/index';
+import Utility from './components/Pay/Utility/index';
+import ReceiveNotify from './components/ReceiveNotify/index';
+import SendNotify from './components/SendNotify/index';
+
 import 'antd/lib/index.css';
 let rootElement = document.getElementById('app');
 ReactDOM.render(
@@ -23,9 +27,11 @@ ReactDOM.render(
         <Register></Register>
         <Login></Login>
         <Footer></Footer>
-            <ShowInfos></ShowInfos>
-            <SuperAdminShowInfos></SuperAdminShowInfos>
-            <ApplyShop></ApplyShop>
+        <ShowInfos></ShowInfos>
+        <SuperAdminShowInfos></SuperAdminShowInfos>
+        <Utility></Utility>
+        <ReceiveNotify></ReceiveNotify>
+        <SendNotify></SendNotify>
     </div>,
     rootElement
 );
