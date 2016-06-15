@@ -7,30 +7,10 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var db = require('./db/db.js');
 
 var app = express();
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'wangning',
-  database: 'shopManage'
-});
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-    return;
-  }
 
-  console.log('connected as id ' + connection.threadId);
-});
-connection.query('SELECT * FROM `user` WHERE `userName` = "wangning"', function(error, results, fields) {
-  // error will be an Error if one occurred during the query
-  // results will contain the results of the query
-  // fields will contain information about the returned results fields (if any)
-  console.log(results);
-  console.log(fields);
-});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

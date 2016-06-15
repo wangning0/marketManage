@@ -33,7 +33,7 @@ CREATE TABLE `feedback` (
 -- ----------------------------
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
-  `messageId` int(10) NOT NULL,
+  `messageId` int(10) NOT NULL AUTO_INCREMENT,
   `message` text NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`messageId`)
