@@ -4,6 +4,9 @@ var db = require('../db/db.js');
 /*
 	页面路由控制
  */
+router.get('/index', function(req, res, next) {
+	res.render('index');
+})
 router.get('/login', function(req, res, next) {
 	res.render('login');
 });
