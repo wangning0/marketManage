@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>查看留言</title>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/superAdminIndex.css">
+	<script src="/javascripts/jquery.min.js"></script>
+	<script src="/javascripts/avalon.min.js"></script>
+	<script src="/javascripts/bootstrap.min.js"></script>
+	<style>
+	.checkApply{
+		width: 80%;
+		margin: 100px auto;
+	}
+	</style>
+</head>
+<body>
+<div class="wrap" ms-controller="checkApply">
+	<div class="header">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="#">商城管理系统</a>
+			    </div>
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li><a href="/superAdmin">首页</a></li>
+			        <li><a href="/sendNotice">发送通知</a></li>
+			        <li class="active"><a href="/checkApply">审核申请</a></li>
+			        <li><a href="/allFeedback">查看留言</a></li>
+			      </ul>
+			      
+			      <ul class="nav navbar-nav navbar-right">
+			        <li><a href="#">Hello,{{userName}}</a></li>
+			        <li><a href="/">退出</a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		</div>
+	<div class="checkApply">
+		<table class="table table-bordered">
+				<thead>
+					<th>店铺</th>
+					<th>申请者</th>
+					<th>申请原因</th>
+					<th>同意申请</th>	
+					<th>失败申请</th>
+				</thead>
+				<tbody>
+					<tr ms-repeat="apply">
+						<td>{{el.location}}</td>
+						<td>{{el.userName}}</td>
+						<td>{{el.applyReason}}</td>
+						<td><button class="agree btn btn-danger" ms-attr-shopId="el.shopId" ms-attr-userId="el.userId" ms-attr-shopname="el.location">同意</button></td>
+						<td><button class="disagree btn btn-danger" ms-attr-shopId="el.shopId" ms-attr-userId="el.userId" ms-attr-shopname="el.location">不同意</button></td>	
+					</tr>
+				</tbody>
+			</table>
+	</div>
+</div>
+<!-- Modal -->
+<script src="/javascripts/checkApply.js"></script>
+</body>
+</html>

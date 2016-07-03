@@ -3,9 +3,37 @@
 <head>
 	<meta charset="UTF-8">
 	<title>登录页</title>
-	<link rel="stylesheet" href="／stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/login.css">
+	<script src="/javascripts/jquery.min.js"></script>
 </head>
 <body>
-登录页
+<div class="wrap">
+	<h1>商场管理系统</h1>
+	<form class="form-horizontal">
+		<div class="form-group">
+			<label for="userName" class="col-sm-2 control-label">用户名</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="userName" placeholder="用户名">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="passwd" class="col-sm-2 control-label">密码</label>
+			<div class="col-sm-10">
+				<input type="password" class="form-control" id="passwd" placeholder="密码">
+			</div>
+		</div>
+		<div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="submit" class="btn btn-default login">登录</button>
+		    </div>
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="submit" class="btn btn-default register">注册</button>
+		    </div>
+		</div>
+	</form>
+</div>
+<script src="/javascripts/login.js"></script>
 </body>
 </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>发送通知</title>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/superAdminIndex.css">
+	<script src="/javascripts/jquery.min.js"></script>
+	<script src="/javascripts/avalon.min.js"></script>
+	<script src="/javascripts/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="wrap" ms-controller="sendNotice">
+	<div class="header">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="#">商城管理系统</a>
+			    </div>
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li><a href="/superAdmin">首页</a></li>
+			        <li class="active"><a href="/sendNotice">发送通知</a></li>
+			        <li><a href="/checkApply">审核申请</a></li>
+			        <li><a href="/allFeedback">查看留言</a></li>
+			      </ul>
+			      
+			      <ul class="nav navbar-nav navbar-right">
+			        <li><a href="#">Hello,{{userName}}</a></li>
+			        <li><a href="/">退出</a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		</div>
+	<div class="sendNotice">
+		<form class="form-horizontal">
+			  <div class="form-group">
+			    <label for="chooseShop" class="col-sm-3 control-label">选择通知对象</label>
+			    <div class="col-sm-9">
+			      <select class="form-control choosedUser">
+			      	 <option value="0">所有</option>
+					  <option ms-repeat="allUser" ms-attr-value="el.userId">{{el.userName}}</option>
+					</select>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label for="chooseShop" class="col-sm-3 control-label">通知内容</label>
+			    <div class="col-sm-9">
+			      <textarea class="form-control message" rows="5"></textarea>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <div class="col-sm-offset-3 col-sm-9">
+			      <button type="button" style="width: 100%; background: #cec6c6"  class="btn btn-default send">发送</button>
+			    </div>
+			</div>
+			</form>
+	</div>
+</div>
+<!-- Modal -->
+<script src="/javascripts/sendNotice.js"></script>
+</body>
+</html>

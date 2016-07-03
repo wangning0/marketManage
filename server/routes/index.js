@@ -4,23 +4,49 @@ var db = require('../db/db.js');
 /*
 	页面路由控制
  */
-router.get('/index', function(req, res, next) {
-	res.render('index');
+router.get('/', function(req, res, next) {
+	res.render('login');
 })
 router.get('/login', function(req, res, next) {
 	res.render('login');
 });
 
 router.get('/register', function(req, res, next) {
-	res.render('/register');
+	res.render('register');
 });
 
 router.get('/admin', function(req, res, next) {
 	res.render('admiIndex');
 });
-
+router.get('/modifyPasswd', function(req, res, next) {
+	res.render('modifyPasswd');
+})
 router.get('/superAdmin', function(req, res, next) {
 	res.render('superAdminIndex');
+})
+router.get('/notice', function(req, res, next) {
+	res.render('notice');
+})
+router.get('/addMoneyPage', function(req, res, next) {
+	res.render('addMoney');
+})
+router.get('/pay', function(req, res, next) {
+	res.render('pay');
+})
+router.get('/applyShop', function(req, res, next) {
+	res.render('applyShop');
+})
+router.get('/feedback', function(req, res, next) {
+	res.render('feedback');
+})
+router.get('/sendNotice', function(req, res, next) {
+	res.render('sendNotice');
+})
+router.get('/checkApply', function(req, res, next) {
+	res.render('checkApply');
+})
+router.get('/allFeedback', function(req, res, next) {
+	res.render('allFeedback');
 })
 
 /*
@@ -141,7 +167,8 @@ router.get('/deleteShopOwner', function(req, res, next) {
 
 router.get('/payedWater', function(req, res, next) {
 	var shopId = req.query.shopId;
-	db.payedWater(shopId, function(err, result) {
+	var userId = req.query.userId;
+	db.payedWater(userId, shopId, function(err, result) {
 		if (err) {
 			res.send({
 				status: 1,
@@ -160,7 +187,8 @@ router.get('/payedWater', function(req, res, next) {
 
 router.get('/payedEle', function(req, res, next) {
 	var shopId = req.query.shopId;
-	db.payedEle(shopId, function(err, result) {
+	var userId = req.query.userId;
+	db.payedEle(userId, shopId, function(err, result) {
 		if (err) {
 			res.send({
 				status: 1,
@@ -218,6 +246,7 @@ router.get('/noPayedEle', function(req, res, next) {
 router.get('/agreeApply', function(req, res, next) {
 	var userId = req.query.userId;
 	var shopId = req.query.shopId;
+	console.log(userId, shopId);
 	db.agreeApply(userId, shopId, function(err, result) {
 		if (err) {
 			res.send({
@@ -235,10 +264,31 @@ router.get('/agreeApply', function(req, res, next) {
 	})
 })
 
-router.get('/applying', function(req, res, next) {
+router.post('/applying', function(req, res, next) {
+	var userId = req.body.userId;
+	var shopId = req.body.shopId;
+	var applyReason = req.body.applyReason;
+	console.log(req.body.userId);
+	db.applying(userId, shopId, applyReason, function(err, result) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: result,
+				message: ''
+			})
+		}
+	})
+});
+router.get('/cancleApplying', function(req, res, next) {
 	var userId = req.query.userId;
 	var shopId = req.query.shopId;
-	db.applying(userId, shopId, function(err, result) {
+	db.cancelApplying(userId, shopId, function(err, result) {
 		if (err) {
 			res.send({
 				status: 1,
@@ -254,7 +304,6 @@ router.get('/applying', function(req, res, next) {
 		}
 	})
 })
-
 router.post('/changePasswd', function(req, res, next) {
 	var userId = req.body.userId;
 	var passwd = req.body.passwd;
@@ -281,7 +330,7 @@ router.post('/register', function(req, res, next) {
 	var infoObj = {
 		userName: userName,
 		passwd: passwd
-	}
+	};
 	db.register(infoObj, function(err, results) {
 		if (err) {
 			res.send({
@@ -325,15 +374,178 @@ router.post('/login', function(req, res, next) {
 
 router.post('/sendMessage', function(req, res, next) {
 	var message = req.body.message;
-	var time = req.body.time;
 	var allId = req.body.allId;
 	var uId = req.body.uId;
 	var messageInfo = {
 		message: message,
-		time: time,
+		time: new Date(),
 		allId: allId
 	}
 	db.sendMessage(messageInfo, uId, function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.get('/addMoney', function(req, res, next) {
+	var userId = req.query.userId;
+	var money = req.query.money;
+	db.addMoney(userId, money, function(err, result) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: result,
+				message: ''
+			})
+		}
+	})
+})
+router.get('/oneUser', function(req, res, next) {
+	var userId = req.query.userId;
+	db.oneUser(userId, function(err, result) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: result,
+				message: ''
+			})
+		}
+	})
+});
+router.post('/oneUserByName', function(req, res, next) {
+	var userName = req.body.userName;
+	console.log(userName);
+	db.oneUserByName(userName, function(err, result) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: result,
+				message: ''
+			})
+		}
+	})
+});
+router.get('/allApplyShop', function(req, res, next) {
+	db.allApplyShop(function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.get('/getAllNoUsedShop', function(req, res, next) {
+	db.getAllNoUsedShop(function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.post('/sendFeedback', function(req, res, next) {
+	var userId = req.body.userId;
+	var feedback = req.body.feedback;
+	db.sendFeedback(userId, feedback, function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.get('/getAllApply', function(req, res, next) {
+	db.getAllApply(function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.post('/setWater', function(req, res, next) {
+	var value = req.body.value;
+	var shopId = req.body.shopId;
+	db.setWater(value, shopId, function(err, results) {
+		if (err) {
+			res.send({
+				status: 1,
+				body: [],
+				message: err
+			})
+		} else {
+			res.send({
+				status: 0,
+				body: results,
+				message: ''
+			})
+		}
+	})
+})
+router.post('/setEle', function(req, res, next) {
+	var value = req.body.value;
+	var shopId = req.body.shopId;
+	db.setEle(value, shopId, function(err, results) {
 		if (err) {
 			res.send({
 				status: 1,

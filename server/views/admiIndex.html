@@ -3,9 +3,113 @@
 <head>
 	<meta charset="UTF-8">
 	<title>后台管理页面</title>
-	<link rel="stylesheet" href="／stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/adminIndex.css">
+	<script src="/javascripts/jquery.min.js"></script>
+	<script src="/javascripts/avalon.min.js"></script>
 </head>
 <body>
-后台管理页面
+	<div class="wrap" ms-controller="adminIndex" class="ms-controller">
+		<div class="header">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="#">商城管理系统</a>
+			    </div>
+
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li class="active"><a href="/admin">首页</a></li>
+			        <li><a href="/notice">通知</a></li>
+			        <li><a href="/addMoneyPage">充值</a></li>
+			        <li><a href="/applyShop">申请店铺</a></li>
+			        <li><a href="/feedback">留言反馈</a></li>
+			      </ul>
+			      
+			      <ul class="nav navbar-nav navbar-right">
+			        <li><a href="#">Hello,{{applyingName}}</a></li>
+			        <li><a href="/modifyPasswd">修改密码</a></li>
+			        <li><a href="/">退出</a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		</div>
+		<div class="info">
+			<h2>个人信息</h2>
+			<table class="table table-bordered">
+				<thead>
+					<th>用户姓名</th>
+					<th>拥有店铺数量</th>	
+					<th>申请店铺数量</th>	
+					<th>账户余额</th>	
+				</thead>
+				<tbody>
+					<tr>
+						<td>{{applyingName}}</td>
+						<td>{{info.hasedShop}}</td>
+						<td>{{info.applyingShop}}</td>
+						<td>{{info.money}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="applyingShop">
+			<h2>已有商铺</h2>
+			<table class="table table-bordered">
+				<thead>
+					<th>店铺名</th>
+					<th>使用者</th>
+					<th>店铺位置</th>
+					<th>水费</th>	
+					<th>电费</th>
+					<th>是否已交水费</th>
+					<th>是否已交电费</th>
+					<th>缴水费</th>
+					<th>缴电费</th>	
+				</thead>
+				<tbody>
+					<tr ms-repeat="hasedShop">
+						<td>{{el[0].name}}</td>
+						<td>{{el[0].owner}}</td>
+						<td>{{el[0].location}}</td>
+						<td>{{el[0].waterFee}}</td>
+						<td>{{el[0].eleFee}}</td>
+						<td>{{el[0].payWater | myfilter}}</td>
+						<td>{{el[0].payEle | myfilter}}</td>
+						<td><button class="payWater btn btn-danger" ms-attr-shopId="el[0].shopId">缴水费</button></td>
+						<td><button class="payEle btn btn-danger" ms-attr-shopId="el[0].shopId">缴电费</button></td>	
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="applyingShop">
+			<h2>申请店铺</h2>
+			<table class="table table-bordered">
+				<thead>
+					<th>申请人</th>
+					<th>申请店铺</th>
+					<th>取消申请</th>
+				</thead>
+				<tbody>
+					<tr ms-repeat="applyingShop">
+						<td>{{applyingName}}</td>
+						<td>{{el[0].location}}</td>
+						<td><button class="cancleApply btn btn-danger" ms-attr-shopId="el[0].shopId">取消</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script src="/javascripts/adminIndex.js"></script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+
+.wrap{
+	width: 500px;
+	height: auto;
+	margin:200px auto;
+}
+h1{
+	text-align: center;
+}
+button{
+	width: 100%;
+	margin-top: 10px;
+	border-radius: 10px;
+}
+.register{
+	background: #d8d8ec;
+}

@@ -45,7 +45,7 @@ module.exports = {
   },
   //查询某一个用户的所有通知消息
   getOneUserNoticeMessage: function(userId, cb) {
-    connection.query('select message.messageId,message,time,`all` FROM message left join (select messageId from `user-message` where userId=?) a on message.messageId=a.messageId order by time DESC ', [userId], function(err, results) {
+    connection.query('(select * from message where `all`=1) union (select  message.messageId,message,time,`all`  from message   join (select messageId from `user-message` where userId=?) middle on middle.messageId=message.messageId) ORDER BY time DESC ', [userId], function(err, results) {
       cb(err, results);
     })
   },
@@ -110,12 +110,14 @@ module.exports = {
         }, function(err, result) {
           cb(err, results);
         })
+      } else {
+        cb(err, results);
       }
     })
   },
   //删除某一个二级管理员的某一个商铺信息
   deleteShopOwner: function(userId, shopId, cb) {
-    connection.query('update shopMessage set owner=null,used=0,waterFee=0,eleFee=0,payWater=0,payEle=0 where shopId=?', [shopId], function(err, results) {
+    connection.query('update shopMessage set owner=null,used=0,waterFee=0,eleFee=0,payWater=0,payEle=0,name=null where shopId=?', [shopId], function(err, results) {
       if (err) {
         cb(err);
         return;
@@ -126,15 +128,69 @@ module.exports = {
     })
   },
   //交了水费
-  payedWater: function(shopId, cb) {
-    connection.query('update shopMessage set payWater=0 where shopId=?', [shopId], function(err, result) {
-      cb(err, result);
+  payedWater: function(userId, shopId, cb) {
+    var sId = shopId;
+    connection.query('select * from user where userId=?', [userId], function(err, result) {
+      if (err) {
+        cb(err)
+        return;
+      }
+      var money = result[0].money;
+      connection.query('select waterFee from shopMessage where shopId=?', [shopId], function(err, results) {
+        if (err) {
+          cb(err)
+          return;
+        }
+        var waterFee = results[0].waterFee;
+        if (money > waterFee) {
+          connection.query('update shopMessage set payWater=0 where shopId=?', [shopId], function(err, result) {
+            //cb(err, result);
+            if (err) {
+              cb(err)
+              return;
+            }
+            money = parseInt(money) - parseInt(waterFee);
+            connection.query('update user set money=? where userId=?', [money, userId], function(err, result) {
+              cb(err, result);
+            })
+          })
+        } else {
+          cb('余额不足！请充值!')
+        }
+      })
     })
   },
   //交了电费
-  payedEle: function(shopId, cb) {
-    connection.query('update shopMessage set payELe=0 where shopId=?', [shopId], function(err, result) {
-      cb(err, result);
+  payedEle: function(userId, shopId, cb) {
+    connection.query('select * from user where userId=?', [userId], function(err, result) {
+      if (err) {
+        cb(err)
+        return;
+      }
+      var money = result[0].money;
+      connection.query('select eleFee from shopMessage  where shopId=?', [shopId], function(err, result) {
+        if (err) {
+          cb(err)
+          return;
+        }
+        var eleFee = result[0].eleFee;
+        if (money > eleFee) {
+          connection.query('update shopMessage set payEle=0 where shopId=?', [shopId], function(err, result) {
+            //cb(err, result);
+            if (err) {
+              cb(err)
+              return;
+            }
+            money = parseInt(money) - parseInt(eleFee);
+            connection.query('update user set money=? where userId=?', [money, userId], function(err, result) {
+              cb(err, result);
+            })
+          })
+        } else {
+          cb('余额不足！请充值!')
+        }
+      })
+
     })
   },
   //没交水费
@@ -151,6 +207,7 @@ module.exports = {
   },
   //同意二级管理员的店铺申请
   agreeApply: function(userId, shopId, cb) {
+    console.log('userId', userId, shopId);
     connection.query('select userName from user where userId=?', [userId], function(err, result) {
       if (err) {
         cb(err);
@@ -159,26 +216,108 @@ module.exports = {
       var name = result[0].userName;
       connection.query('update shopMessage set owner=?,used=1 where shopId=?', [name, shopId], function(err, result) {
         if (err) {
-          cb(err);
+          cb('err', err);
           return;
         }
-        connection.query('insert into `shop-user` set?', {
-          userId: userId,
-          shopId: shopId,
-          applying: 0
-        }, function(err, result1) {
+        console.log('usewrId', userId, shopId);
+        userId = parseInt(userId);
+        shopId = parseInt(shopId);
+        connection.query('update `shop-user` set applying=? where userId=? and shopId=?', [0, userId, shopId], function(err, result1) {
+          console.log('e', err);
           cb(err, result1);
         })
       })
     })
   },
   //申请店铺
-  applying: function(userId, shopId, cb) {
-    connection.query('insert into `shop-user` set?', {
-      userId: userId,
-      shopId: shopId,
-      applying: 1
+  applying: function(userId, shopId, applyReason, cb) {
+    connection.query('select * from `shop-user` where userId=? and shopId=? and applying=1', [userId, shopId], function(err, res) {
+      if (err) {
+        cb(err);
+        return false;
+      }
+      if (res.length != 0) {
+        cb('已经申请!');
+      } else {
+        connection.query('insert into `shop-user` set?', {
+          userId: userId,
+          shopId: shopId,
+          applying: 1,
+          applyReason: applyReason
+        }, function(err, result) {
+          cb(err, result);
+        })
+      }
+    })
+  },
+  //取消申请
+  cancelApplying: function(userId, shopId, cb) {
+    connection.query('delete from `shop-user` where userId=? and shopId=? and applying=1', [userId, shopId], function(err, result) {
+      cb(err, result);
+    })
+  },
+  addMoney: function(userId, money, cb) {
+    connection.query('select money from user  where userId=?', [userId], function(err, result) {
+      if (err) {
+        cb(err);
+        return;
+      }
+      money = parseInt(money) + parseInt(result[0].money);
+      connection.query('update user set money=? where userId=?', [money, userId], function(err, result) {
+        cb(err, result);
+      })
+    })
+  },
+  oneUser: function(userId, cb) {
+    connection.query('select * from user where userId=?', [userId], function(err, result) {
+      cb(err, result);
+    })
+  },
+  allApplyShop: function(cb) {
+    connection.query('select userName,location,applyReason from `user` join `shopMessage` join `shop-user` on `user`.userId=`shop-user`.userId and `shopMessage`.shopId=`shop-user`.shopId where applying=1', function(err, results) {
+      cb(err, results);
+    })
+  },
+  getAllNoUsedShop: function(cb) {
+    connection.query('select shopId,location from shopMessage where used=0', function(err, results) {
+      cb(err, results);
+    })
+  },
+  sendFeedback: function(userId, feedback, cb) {
+    connection.query('insert into `feedback` set?', {
+      feedback: feedback,
+      time: new Date()
     }, function(err, result) {
+      if (err) {
+        cb(err);
+        return false;
+      }
+      var fId = result.insertId;
+      connection.query('insert into `user-feedback` set?', {
+        fId: fId,
+        uId: userId
+      }, function(err, results) {
+        cb(err, results);
+      })
+    })
+  },
+  oneUserByName: function(userName, cb) {
+    connection.query('select userId from user where userName=?', [userName], function(err, result) {
+      cb(err, result);
+    })
+  },
+  getAllApply: function(cb) {
+    connection.query('select userName , location,applyReason,`user`.userId,`shopMessage`.shopId from `shop-user` join `user` join `shopMessage` on `shop-user`.shopId=shopMessage.shopId and `shop-user`.userId=`user`.userId where applying=1', function(err, results) {
+      cb(err, results);
+    })
+  },
+  setWater: function(value, shopId, cb) {
+    connection.query('update shopMessage set waterFee=?,payWater=1 where shopId=?', [waterEle, shopId], function(err, result) {
+      cb(err, result);
+    })
+  },
+  setEle: function(value, shopId, cb) {
+    connection.query('update shopMessage set eleFee=?,payEle=1 where shopId=?', [value, shopId], function(err, result) {
       cb(err, result);
     })
   }

@@ -3,9 +3,147 @@
 <head>
 	<meta charset="UTF-8">
 	<title>超级管理员首页</title>
-	<link rel="stylesheet" href="／stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+	<link rel="stylesheet" href="/stylesheets/superAdminIndex.css">
+	<script src="/javascripts/jquery.min.js"></script>
+	<script src="/javascripts/avalon.min.js"></script>
+	<script src="/javascripts/bootstrap.min.js"></script>
 </head>
 <body>
-超级管理员首页
+<div class="wrap" ms-controller="allShop">
+	<div class="header">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="#">商城管理系统</a>
+			    </div>
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li class="active"><a href="/superAdmin">首页</a></li>
+			        <li><a href="/sendNotice">发送通知</a></li>
+			        <li><a href="/checkApply">审核申请</a></li>
+			        <li><a href="/allFeedback">查看留言</a></li>
+			      </ul>
+			      
+			      <ul class="nav navbar-nav navbar-right">
+			        <li><a href="#">Hello,{{userName}}</a></li>
+			        <li><a href="/">退出</a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		</div>
+	<div class="allShop">
+		<h2>所有商铺信息</h2>
+		<table class="table table-bordered">
+				<thead>
+					<th>店铺位置</th>
+					<th>店铺名</th>
+					<th>是否使用</th>	
+					<th>使用者</th>
+					<th>水费</th>	
+					<th>电费</th>
+					<th>是否已交水费</th>
+					<th>是否已交电费</th>
+					<th>收回店铺</th>
+					<th>设置水费</th>
+					<th>设置电费</th>
+				</thead>
+				<tbody>
+					<tr ms-repeat="allShops">
+						<td>{{el.location}}</td>
+						<td>{{el.name }}</td>
+						<td>{{el.used | use}}</td>
+						<td>{{el.owner}}</td>
+						<td>{{el.waterFee}}</td>
+						<td>{{el.eleFee}}</td>
+						<td>{{el.payWater | myfilter}}</td>
+						<td>{{el.payEle | myfilter}}</td>
+						<td><button type="button" class="btn btn-danger opa" data-toggle="modal" data-target="#myModal" ms-attr-shopId="el.shopId" ms-attr-owner="el.owner">收回店铺</button></td>
+						<td><button type="button" class="btn btn-danger setwater" data-toggle="modal" data-target="#water" ms-attr-shopId="el.shopId" ms-attr-owner="el.owner">设置水费</button></td>
+						<td><button type="button" class="btn btn-danger setele" data-toggle="modal" data-target="#ele" ms-attr-shopId="el.shopId" ms-attr-owner="el.owner">设置电费</button></td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">收回店铺</h4>
+      </div>
+      <div class="modal-body">
+        确认收回该店铺吗？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary deleteShop">收回</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="water" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">设置水费</h4>
+      </div>
+      <div class="modal-body">
+       <form class="form-horizontal">
+			  <div class="form-group">
+			    <label for="watervalue" class="col-sm-3 control-label">水费</label>
+			    <div class="col-sm-5">
+			      <input type="text" class="form-control" id="watervalue" placeholder="水费">
+			    </div>
+			  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary waterSubmit">设置</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ele" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">设置电费</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+			  <div class="form-group">
+			    <label for="elevalue" class="col-sm-3 control-label">电费</label>
+			    <div class="col-sm-5">
+			      <input type="text" class="form-control" id="elevalue" placeholder="电费">
+			    </div>
+			  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary eleSubmit">设置</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/javascripts/superAdminIndex.js"></script>
 </body>
 </html>

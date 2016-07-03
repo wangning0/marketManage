@@ -1,0 +1,8 @@
+th,td{
+	text-align: center;
+	vertical-align: middle;
+}
+.message{
+	width: 60%;
+	margin: 100px auto;
+}

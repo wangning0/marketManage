@@ -1,0 +1,10 @@
+*{
+	margin:0px;
+	padding:0px;
+}
+.ms-controller{
+	display: none;
+}
+th,td{
+	text-align: center;
+}
