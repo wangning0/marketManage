@@ -11,7 +11,7 @@
  Target Server Version : 50711
  File Encoding         : utf-8
 
- Date: 06/12/2016 19:54:36 PM
+ Date: 07/03/2016 12:57:59 PM
 */
 
 SET NAMES utf8;
@@ -23,10 +23,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback` (
   `feedbackId` int(10) NOT NULL AUTO_INCREMENT,
-  `feedback` text NOT NULL,
+  `feedback` text CHARACTER SET utf8 NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`feedbackId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Table structure for `message`
@@ -34,10 +34,11 @@ CREATE TABLE `feedback` (
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `messageId` int(10) NOT NULL AUTO_INCREMENT,
-  `message` text NOT NULL,
+  `message` text CHARACTER SET utf8 NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `all` int(11) NOT NULL,
   PRIMARY KEY (`messageId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Table structure for `shop-user`
@@ -46,7 +47,8 @@ DROP TABLE IF EXISTS `shop-user`;
 CREATE TABLE `shop-user` (
   `userId` int(10) NOT NULL,
   `shopId` int(10) NOT NULL,
-  `id` int(1) NOT NULL,
+  `applying` int(1) NOT NULL,
+  `applyReason` text CHARACTER SET utf8,
   KEY `userId` (`userId`),
   KEY `shopId` (`shopId`),
   CONSTRAINT `sId` FOREIGN KEY (`shopId`) REFERENCES `shopMessage` (`shopId`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -59,14 +61,23 @@ CREATE TABLE `shop-user` (
 DROP TABLE IF EXISTS `shopMessage`;
 CREATE TABLE `shopMessage` (
   `shopId` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` varchar(50) NOT NULL,
+  `owner` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `used` int(1) NOT NULL,
   `waterFee` int(10) NOT NULL,
-  `eleFee` varchar(10) NOT NULL,
-  `payWater` int(1) NOT NULL,
-  `payEle` int(1) NOT NULL,
+  `eleFee` varchar(10) CHARACTER SET utf8 NOT NULL,
+  `payWater` int(1) NOT NULL DEFAULT '1',
+  `payEle` int(1) NOT NULL DEFAULT '1',
+  `location` varchar(10) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`shopId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+--  Records of `shopMessage`
+-- ----------------------------
+BEGIN;
+INSERT INTO `shopMessage` VALUES ('1', '', '0', '0', '0', '1', '1', '1-1', ''), ('2', null, '0', '0', '0', '1', '1', '1-2', null), ('3', null, '0', '0', '0', '1', '1', '1-3', ''), ('4', '', '0', '0', '0', '0', '0', '1-4', ''), ('5', '', '0', '0', '0', '0', '0', '1-5', null), ('6', null, '0', '0', '0', '1', '1', '2-1', null), ('7', '', '0', '0', '0', '0', '0', '2-2', ''), ('8', null, '0', '0', '0', '1', '1', '2-3', null), ('9', null, '0', '0', '0', '1', '1', '2-4', null), ('10', '', '0', '0', '0', '0', '0', '2-5', null), ('11', null, '0', '0', '0', '1', '1', '3-1', null), ('12', null, '0', '0', '0', '1', '1', '3-2', null), ('13', null, '0', '0', '0', '1', '1', '3-3', null), ('14', '', '0', '0', '0', '1', '1', '3-4', null), ('15', null, '0', '0', '0', '1', '1', '3-5', null);
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `user`
@@ -74,17 +85,18 @@ CREATE TABLE `shopMessage` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `userId` int(11) NOT NULL AUTO_INCREMENT,
-  `userName` varchar(50) NOT NULL,
+  `userName` varchar(50) CHARACTER SET utf8 NOT NULL,
   `userAuth` int(1) NOT NULL,
-  `userPasswd` varchar(100) NOT NULL,
+  `userPasswd` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `money` int(50) DEFAULT NULL,
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Records of `user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES ('1', 'wangning', '0', '123'), ('2', 'lan', '1', '123'), ('3', 'wu', '1', '123'), ('4', 'wangning', '1', '123');
+INSERT INTO `user` VALUES ('1', 'admin', '0', 'admin', '0');
 COMMIT;
 
 -- ----------------------------

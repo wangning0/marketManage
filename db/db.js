@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var async = require('async');
+var schedule = require('node-schedule');
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -13,6 +14,74 @@ connection.connect(function(err) {
   }
   console.log('connected as id ' + connection.threadId);
 });
+var rule = new schedule.RecurrenceRule();
+rule.date = 1;
+rule.hour = 0;
+rule.minute = 0;
+var j = schedule.scheduleJob(rule, function() {
+  connection.query('select user.userId,shopMessage.shopId,payWater,payEle,waterFee,eleFee,money from `shop-user` join `shopMessage` join `user` on `shop-user`.userId=`user`.userId and `shop-user`.shopId=`shopMessage`.shopId where applying=0', function(err, results) {
+    async.eachOfSeries(results, function(item, index, next) {
+        if ((item.waterFee + item.eleFee) > item.money) {
+          connection.query('insert into message set ?', {
+            message: '余额不足！请充值',
+            time: new Date(),
+            all: 0
+          }, function(err, results1) {
+            if (err) {
+              next(err);
+              return;
+            }
+            connection.query('insert into `user-message` set ?', {
+              userId: item.userId,
+              messageId: results1.insertId
+            }, function(err, result) {
+              next(err);
+            })
+          })
+        } else {
+          console.log(item);
+          connection.query('update shopMessage set payWater=0,waterFee=0 where shopId=?', [item.shopId], function(err, result) {
+            //cb(err, result);
+            if (err) {
+              next(err);
+              return;
+            }
+            connection.query('select money from `user` where userId=?', [item.userId], function(err, resu) {
+              if (err) {
+                next(err);
+                return;
+              }
+              var money = parseInt(resu[0].money) - parseInt(item.waterFee);
+              console.log(money);
+              connection.query('update user set money=? where userId=?', [money, item.userId], function(err, result) {
+                if (err) {
+                  next(err);
+                  return;
+                }
+                connection.query('update shopMessage set payEle=0,eleFee=0 where shopId=?', [item.shopId], function(err, result) {
+                  //cb(err, result);
+                  if (err) {
+                    next(err);
+                    return;
+                  }
+                  money = parseInt(money) - parseInt(item.eleFee);
+                  console.log('money', money);
+                  connection.query('update user set money=? where userId=?', [money, item.userId], function(err, result) {
+                    next(err);
+                  })
+                })
+              })
+            })
+
+          });
+        }
+      },
+      function(err) {
+        console.log(err);
+      })
+  })
+});
+
 
 module.exports = {
   //查询所有商铺信息
@@ -143,7 +212,7 @@ module.exports = {
         }
         var waterFee = results[0].waterFee;
         if (money > waterFee) {
-          connection.query('update shopMessage set payWater=0 where shopId=?', [shopId], function(err, result) {
+          connection.query('update shopMessage set payWater=0,waterFee=0 where shopId=?', [shopId], function(err, result) {
             //cb(err, result);
             if (err) {
               cb(err)
@@ -175,7 +244,7 @@ module.exports = {
         }
         var eleFee = result[0].eleFee;
         if (money > eleFee) {
-          connection.query('update shopMessage set payEle=0 where shopId=?', [shopId], function(err, result) {
+          connection.query('update shopMessage set payEle=0,eleFee=0 where shopId=?', [shopId], function(err, result) {
             //cb(err, result);
             if (err) {
               cb(err)
