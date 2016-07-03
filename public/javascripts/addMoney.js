@@ -20,7 +20,6 @@ $('.right').click(function(e) {
 				window.location.href = '/admin?id=' + userId;
 			} else {
 				alert('充值失败!');
-				window.location.reload();
 			}
 		},
 		error: function(err) {

@@ -11,7 +11,7 @@
  Target Server Version : 50711
  File Encoding         : utf-8
 
- Date: 07/03/2016 12:57:59 PM
+ Date: 07/03/2016 13:28:29 PM
 */
 
 SET NAMES utf8;
@@ -88,9 +88,9 @@ CREATE TABLE `user` (
   `userName` varchar(50) CHARACTER SET utf8 NOT NULL,
   `userAuth` int(1) NOT NULL,
   `userPasswd` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `money` int(50) DEFAULT NULL,
+  `money` int(50) DEFAULT '0',
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Records of `user`

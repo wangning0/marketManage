@@ -398,8 +398,9 @@ router.post('/sendMessage', function(req, res, next) {
 	})
 })
 router.get('/addMoney', function(req, res, next) {
-	var userId = req.query.userId;
-	var money = req.query.money;
+	var userId = parseInt(req.query.userId);
+	var money = parseInt(req.query.money);
+	console.log(req.query);
 	db.addMoney(userId, money, function(err, result) {
 		if (err) {
 			res.send({
