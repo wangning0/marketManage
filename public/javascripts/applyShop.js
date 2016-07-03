@@ -26,12 +26,14 @@ $.ajax({
 $('.right').click(function(e) {
 	var shopId = $('.choosedShop').val();
 	var applyReason = $('.reason').val();
+	var shopName = $('#shopName').val();
 	var applyInfo = {
 		userId: parseInt(userId),
 		shopId: parseInt(shopId),
-		applyReason: applyReason
+		applyReason: applyReason,
+		shopName: shopName
 	};
-	console.log(applyInfo);
+	console.log(applyShop);
 	$.ajax({
 		url: '/applying',
 		type: 'POST',

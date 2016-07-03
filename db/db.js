@@ -299,7 +299,7 @@ module.exports = {
     })
   },
   //申请店铺
-  applying: function(userId, shopId, applyReason, cb) {
+  applying: function(userId, shopId, applyReason, shopName, cb) {
     connection.query('select * from `shop-user` where userId=? and shopId=? and applying=1', [userId, shopId], function(err, res) {
       if (err) {
         cb(err);
@@ -314,7 +314,16 @@ module.exports = {
           applying: 1,
           applyReason: applyReason
         }, function(err, result) {
-          cb(err, result);
+          if (err) {
+            console.log('ersr', err);
+            cb(err)
+            return false;
+          } else {
+            connection.query('update `shopMessage` set name=? where shopId=?', [shopName, shopId], function(err, resultss) {
+              console.log('errw', err);
+              cb(err, resultss);
+            })
+          }
         })
       }
     })

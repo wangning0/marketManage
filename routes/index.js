@@ -268,8 +268,9 @@ router.post('/applying', function(req, res, next) {
 	var userId = req.body.userId;
 	var shopId = req.body.shopId;
 	var applyReason = req.body.applyReason;
+	var shopName = req.body.shopName;
 	console.log(req.body.userId);
-	db.applying(userId, shopId, applyReason, function(err, result) {
+	db.applying(userId, shopId, applyReason, shopName, function(err, result) {
 		if (err) {
 			res.send({
 				status: 1,
